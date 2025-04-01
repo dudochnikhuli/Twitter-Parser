@@ -1,0 +1,6 @@
+selenium==4.16.0
+pandas==2.1.4
+webdriver-manager==4.0.1
+numpy==1.26.3
+lxml==4.9.3
+python-dotenv==1.0.0

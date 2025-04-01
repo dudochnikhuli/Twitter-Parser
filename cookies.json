@@ -1,0 +1,38 @@
+[
+    {
+        "domain": "phantombuster.com",
+        "hostOnly": true,
+        "httpOnly": false,
+        "name": "pb:currentOrgId",
+        "path": "/",
+        "sameSite": "no_restriction",
+        "secure": true,
+        "session": true,
+        "storeId": null,
+        "value": "4404752177051441"
+    },
+    {
+        "domain": ".phantombuster.com",
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "amplitude_device_id",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": true,
+        "storeId": null,
+        "value": "17435490203018985177461146747"
+    },
+    {
+        "domain": ".phantombuster.com",
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "auid",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": true,
+        "storeId": null,
+        "value": "org_4404752177051441"
+    }
+]
