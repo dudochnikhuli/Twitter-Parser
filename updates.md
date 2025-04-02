@@ -4,6 +4,15 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/),
 и проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2025-04-03
+
+### Исправлено
+- Добавлено автоматическое обнаружение Chrome browser в папке chrome-win64
+- Расширена функция `setup_driver()` для явного указания пути к исполняемому файлу Chrome
+- Добавлена проверка нескольких стандартных путей расположения Chrome на разных ОС
+- Улучшены диагностические сообщения при обнаружении Chrome и ChromeDriver
+- Решена ошибка "cannot find Chrome binary" при запуске ChromeDriver
+
 ## [1.0.3] - 2025-04-03
 
 ### Исправлено

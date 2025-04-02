@@ -39,6 +39,28 @@ def setup_driver():
     # Раскомментируйте строку ниже, если вам не нужно видеть браузер
     # chrome_options.add_argument("--headless")
     
+    # Ищем Chrome binary в папке chrome-win64 и других стандартных местах
+    chrome_binary_paths = [
+        os.path.join(os.getcwd(), "chrome-win64", "chrome.exe"),  # В папке chrome-win64 проекта
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",  # Стандартный путь Windows
+        "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",  # Стандартный путь Windows x86
+        "/usr/bin/google-chrome",  # Стандартный путь Linux
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",  # Mac
+    ]
+    
+    chrome_binary = None
+    for path in chrome_binary_paths:
+        if os.path.exists(path):
+            chrome_binary = path
+            print(f"Найден Chrome browser: {path}")
+            break
+    
+    if chrome_binary:
+        chrome_options.binary_location = chrome_binary
+    else:
+        print("Внимание: Chrome browser не найден в стандартных местоположениях.")
+        print("Будет использован Chrome по умолчанию, если он установлен в системе.")
+    
     # Расширенный список возможных путей к chromedriver
     possible_paths = [
         os.path.join(os.getcwd(), "chromedriver.exe"),  # Windows в текущей директории

@@ -1,5 +1,43 @@
 [
     {
+        "domain": ".phantombuster.com",
+        "expirationDate": 1775164328,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_hjSessionUser_2018241",
+        "path": "/",
+        "sameSite": "no_restriction",
+        "secure": true,
+        "session": false,
+        "storeId": null,
+        "value": "eyJpZCI6IjY0ZGYwZDg0LTM5Y2EtNTMyNC05ZjdlLTBjNTk0MzdiYzNiNyIsImNyZWF0ZWQiOjE3NDM2MjgzMjgxMzIsImV4aXN0aW5nIjpmYWxzZX0="
+    },
+    {
+        "domain": "phantombuster.com",
+        "expirationDate": 1775164325,
+        "hostOnly": true,
+        "httpOnly": false,
+        "name": "CookieConsent",
+        "path": "/",
+        "sameSite": null,
+        "secure": true,
+        "session": false,
+        "storeId": null,
+        "value": "{stamp:%27vRDgN2AaQQRteJTJlhBgvCl2YT77CCAMfRGW7r5+MSohT1WVapNx+g==%27%2Cnecessary:true%2Cpreferences:true%2Cstatistics:true%2Cmarketing:true%2Cmethod:%27explicit%27%2Cver:1%2Cutc:1743628325314%2Cregion:%27kz%27}"
+    },
+    {
+        "domain": ".phantombuster.com",
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "__hssrc",
+        "path": "/",
+        "sameSite": "lax",
+        "secure": false,
+        "session": true,
+        "storeId": null,
+        "value": "1"
+    },
+    {
         "domain": "phantombuster.com",
         "hostOnly": true,
         "httpOnly": false,
@@ -13,6 +51,19 @@
     },
     {
         "domain": ".phantombuster.com",
+        "expirationDate": 1743630158,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_hjSession_2018241",
+        "path": "/",
+        "sameSite": "no_restriction",
+        "secure": true,
+        "session": false,
+        "storeId": null,
+        "value": "eyJpZCI6ImRjZGQzYTliLWFiZWYtNDQwYi04MGJkLTk4YjM0ODAxM2VjZSIsImMiOjE3NDM2MjgzMjgxMzMsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjoxLCJzcCI6MH0="
+    },
+    {
+        "domain": ".phantombuster.com",
         "hostOnly": false,
         "httpOnly": false,
         "name": "amplitude_device_id",
@@ -21,7 +72,72 @@
         "secure": false,
         "session": true,
         "storeId": null,
-        "value": "17435490203018985177461146747"
+        "value": "17436283209071044500340858595"
+    },
+    {
+        "domain": ".phantombuster.com",
+        "expirationDate": 1743630126,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "__hssc",
+        "path": "/",
+        "sameSite": "lax",
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "41391165.1.1743628326780"
+    },
+    {
+        "domain": ".phantombuster.com",
+        "expirationDate": 1759180326,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "__hstc",
+        "path": "/",
+        "sameSite": "lax",
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "41391165.940454bfaba95dadb630f33b306a2ab0.1743628326780.1743628326780.1743628326780.1"
+    },
+    {
+        "domain": ".phantombuster.com",
+        "expirationDate": 1778188325.356951,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_ga",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "GA1.1.2053262671.1743628321"
+    },
+    {
+        "domain": ".phantombuster.com",
+        "expirationDate": 1778188337.177931,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "_ga_GJLR4BH3B4",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "GS1.1.1743628320.1.1.1743628337.48.0.0"
+    },
+    {
+        "domain": ".phantombuster.com",
+        "expirationDate": 1775164337,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "amp_e1d871_phantombuster.com",
+        "path": "/",
+        "sameSite": "lax",
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "17436283209071044500340858595.b3JnXzQ0MDQ3NTIxNzcwNTE0NDE=..1ins5hfo2.1ins5i00e.6j.0.6j"
     },
     {
         "domain": ".phantombuster.com",
@@ -34,5 +150,31 @@
         "session": true,
         "storeId": null,
         "value": "org_4404752177051441"
+    },
+    {
+        "domain": ".phantombuster.com",
+        "expirationDate": 1759180326,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "hubspotutk",
+        "path": "/",
+        "sameSite": "lax",
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "940454bfaba95dadb630f33b306a2ab0"
+    },
+    {
+        "domain": ".phantombuster.com",
+        "expirationDate": 1759345926,
+        "hostOnly": false,
+        "httpOnly": false,
+        "name": "sib_cuid",
+        "path": "/",
+        "sameSite": null,
+        "secure": false,
+        "session": false,
+        "storeId": null,
+        "value": "132d7e4a-7853-4642-87fa-c2455c2b925f"
     }
 ]
