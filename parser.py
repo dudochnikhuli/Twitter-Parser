@@ -1,5 +1,4 @@
 import os
-import json
 import time
 import glob
 import pandas as pd
@@ -12,22 +11,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 
-def load_cookies(driver, cookies_file):
-    """Загружает cookies из JSON файла"""
-    try:
-        with open(cookies_file, 'r') as file:
-            cookies = json.load(file)
-            for cookie in cookies:
-                # Selenium не может обрабатывать некоторые атрибуты cookie
-                if 'sameSite' in cookie:
-                    if cookie['sameSite'] == 'None':
-                        cookie['sameSite'] = 'Strict'
-                if 'expiry' in cookie:
-                    del cookie['expiry']
-                driver.add_cookie(cookie)
-        print("Cookies успешно загружены")
-    except Exception as e:
-        print(f"Ошибка при загрузке cookies: {e}")
+def wait_for_manual_login():
+    """Ожидает, пока пользователь войдет в систему вручную"""
+    print("\n===== ИНСТРУКЦИЯ ПО ВХОДУ В СИСТЕМУ =====")
+    print("1. Войдите в свой аккаунт Phantombuster в открывшемся окне браузера")
+    print("2. После успешного входа нажмите Enter в этом окне консоли")
+    print("=============================================")
+    input("Нажмите Enter после входа в систему... ")
+    print("Спасибо! Продолжаем выполнение программы...")
 
 
 def setup_driver():
@@ -172,9 +163,6 @@ def select_page_size(driver, size=30):
 
 
 def main():
-    # Путь к файлу с cookies
-    cookies_file = "Cookies.json"
-    
     # URL сайта
     url = "https://phantombuster.com/7912167802097990/phantoms/5388867849466815/console"
     
@@ -192,15 +180,8 @@ def main():
         driver.get(url)
         print(f"Открыта страница: {url}")
         
-        # Ждем 3 секунды после перехода
-        time.sleep(3)
-        
-        # Загружаем cookies для авторизации
-        load_cookies(driver, cookies_file)
-        
-        # Обновляем страницу после загрузки cookies
-        driver.refresh()
-        time.sleep(3)
+        # Ждем, пока пользователь войдет в систему вручную
+        wait_for_manual_login()
         
         # Выбираем 30 строк на странице
         select_page_size(driver, 30)
