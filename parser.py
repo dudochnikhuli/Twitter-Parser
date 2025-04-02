@@ -10,7 +10,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
-from webdriver_manager.chrome import ChromeDriverManager
 
 
 def load_cookies(driver, cookies_file):
@@ -40,46 +39,49 @@ def setup_driver():
     # Раскомментируйте строку ниже, если вам не нужно видеть браузер
     # chrome_options.add_argument("--headless")
     
-    try:
-        # Способ 1: Использование webdriver-manager без указания пути
-        from webdriver_manager.chrome import ChromeDriverManager
-        from selenium.webdriver.chrome.service import Service
-        
-        # Используем ChromeDriverManager без параметра path
-        service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service, options=chrome_options)
-        driver.maximize_window()
-        return driver
-        
-    except Exception as e:
-        print(f"Ошибка при установке драйвера через менеджер: {e}")
-        
-        try:
-            # Способ 2: Использование ChromeDriver напрямую (требуется ручная загрузка)
-            # Проверяем несколько возможных путей к chromedriver
-            possible_paths = [
-                os.path.join(os.getcwd(), "chromedriver.exe"),  # Windows
-                os.path.join(os.getcwd(), "chromedriver"),      # Linux/Mac
-                "./chromedriver.exe",
-                "./chromedriver"
-            ]
-            
-            for path in possible_paths:
-                if os.path.exists(path):
-                    print(f"Используем локальный ChromeDriver: {path}")
-                    service = Service(executable_path=path)
-                    driver = webdriver.Chrome(service=service, options=chrome_options)
-                    driver.maximize_window()
-                    return driver
-            
-            print("ChromeDriver не найден.")
-            print("Пожалуйста, скачайте подходящую версию ChromeDriver с https://chromedriver.chromium.org/downloads")
-            print("и поместите файл chromedriver.exe (Windows) или chromedriver (Linux/Mac) в текущую папку проекта.")
-            raise FileNotFoundError("ChromeDriver не найден в известных местоположениях")
-                
-        except Exception as e2:
-            print(f"Все способы установки драйвера не удались: {e2}")
-            raise
+    # Расширенный список возможных путей к chromedriver
+    possible_paths = [
+        os.path.join(os.getcwd(), "chromedriver.exe"),  # Windows в текущей директории
+        os.path.join(os.getcwd(), "webdriver", "chromedriver.exe"),  # Windows в папке webdriver
+        os.path.join(os.getcwd(), "drivers", "chromedriver.exe"),  # Еще один вариант
+        "./chromedriver.exe",
+        "./webdriver/chromedriver.exe",
+        "../webdriver/chromedriver.exe",
+        # Linux/Mac пути
+        os.path.join(os.getcwd(), "chromedriver"),
+        os.path.join(os.getcwd(), "webdriver", "chromedriver"),
+        "./chromedriver",
+        "./webdriver/chromedriver"
+    ]
+    
+    # Перебираем все возможные пути и пытаемся использовать первый найденный chromedriver
+    for path in possible_paths:
+        if os.path.exists(path):
+            print(f"Найден ChromeDriver: {path}")
+            try:
+                service = Service(executable_path=path)
+                driver = webdriver.Chrome(service=service, options=chrome_options)
+                driver.maximize_window()
+                print("ChromeDriver успешно инициализирован")
+                return driver
+            except Exception as e:
+                print(f"Не удалось запустить ChromeDriver по пути {path}: {e}")
+                continue
+    
+    # Если все методы не сработали, выдаем инструкции по ручной установке
+    print("\n===== ОШИБКА ИНИЦИАЛИЗАЦИИ WEBDRIVER =====")
+    print("Не удалось найти ChromeDriver.")
+    print("\nРекомендации по решению проблемы:")
+    print("1. Убедитесь, что Google Chrome установлен в системе.")
+    print("2. Скачайте ChromeDriver, соответствующий вашей версии Chrome:")
+    print("   https://chromedriver.chromium.org/downloads")
+    print("3. Поместите файл chromedriver.exe в одну из следующих папок:")
+    print("   - Текущую директорию проекта")
+    print("   - В папку 'webdriver' внутри директории проекта")
+    print("\nПроверить версию Chrome можно, открыв адрес chrome://version/ в браузере")
+    print("==========================================")
+    
+    raise FileNotFoundError("ChromeDriver не найден")
 
 
 def parse_table(driver):
