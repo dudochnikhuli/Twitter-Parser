@@ -4,6 +4,17 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/),
 и проект придерживается [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<<<<<<< Updated upstream
+=======
+## [1.0.2] - 2025-04-03
+
+### Исправлено
+- Ошибка "ChromeDriverManager.__init__() got an unexpected keyword argument 'path'" при инициализации ChromeDriver
+- Улучшена функция `setup_driver()` - удален устаревший параметр `path` из конструктора ChromeDriverManager
+- Добавлена проверка нескольких возможных путей расположения ChromeDriver
+- Улучшены сообщения об ошибках с более подробными инструкциями для ручной установки драйвера
+
+>>>>>>> Stashed changes
 ## [1.0.1] - 2025-04-02
 
 ### Исправлено

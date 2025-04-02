@@ -41,16 +41,12 @@ def setup_driver():
     # chrome_options.add_argument("--headless")
     
     try:
-        # Способ 1: Использование менеджера с явным указанием пути для кэширования
+        # Способ 1: Использование webdriver-manager без указания пути
         from webdriver_manager.chrome import ChromeDriverManager
         from selenium.webdriver.chrome.service import Service
         
-        # Создаем временную директорию для драйвера, если её нет
-        driver_path = os.path.join(os.getcwd(), "webdriver")
-        if not os.path.exists(driver_path):
-            os.makedirs(driver_path)
-            
-        service = Service(ChromeDriverManager(path=driver_path).install())
+        # Используем ChromeDriverManager без параметра path
+        service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service, options=chrome_options)
         driver.maximize_window()
         return driver
@@ -60,20 +56,26 @@ def setup_driver():
         
         try:
             # Способ 2: Использование ChromeDriver напрямую (требуется ручная загрузка)
-            # Загрузите ChromeDriver с https://chromedriver.chromium.org/downloads
-            # и поместите chromedriver.exe в корневую папку проекта
-            chromedriver_path = os.path.join(os.getcwd(), "chromedriver.exe")
+            # Проверяем несколько возможных путей к chromedriver
+            possible_paths = [
+                os.path.join(os.getcwd(), "chromedriver.exe"),  # Windows
+                os.path.join(os.getcwd(), "chromedriver"),      # Linux/Mac
+                "./chromedriver.exe",
+                "./chromedriver"
+            ]
             
-            if os.path.exists(chromedriver_path):
-                print(f"Используем локальный ChromeDriver: {chromedriver_path}")
-                service = Service(executable_path=chromedriver_path)
-                driver = webdriver.Chrome(service=service, options=chrome_options)
-                driver.maximize_window()
-                return driver
-            else:
-                print(f"ChromeDriver не найден по пути: {chromedriver_path}")
-                print("Пожалуйста, скачайте подходящую версию ChromeDriver и поместите в корневую папку проекта")
-                raise FileNotFoundError(f"ChromeDriver не найден: {chromedriver_path}")
+            for path in possible_paths:
+                if os.path.exists(path):
+                    print(f"Используем локальный ChromeDriver: {path}")
+                    service = Service(executable_path=path)
+                    driver = webdriver.Chrome(service=service, options=chrome_options)
+                    driver.maximize_window()
+                    return driver
+            
+            print("ChromeDriver не найден.")
+            print("Пожалуйста, скачайте подходящую версию ChromeDriver с https://chromedriver.chromium.org/downloads")
+            print("и поместите файл chromedriver.exe (Windows) или chromedriver (Linux/Mac) в текущую папку проекта.")
+            raise FileNotFoundError("ChromeDriver не найден в известных местоположениях")
                 
         except Exception as e2:
             print(f"Все способы установки драйвера не удались: {e2}")
