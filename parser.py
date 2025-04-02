@@ -40,11 +40,44 @@ def setup_driver():
     # Раскомментируйте строку ниже, если вам не нужно видеть браузер
     # chrome_options.add_argument("--headless")
     
-    # Устанавливаем и настраиваем драйвер
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=chrome_options)
-    driver.maximize_window()
-    return driver
+    try:
+        # Способ 1: Использование менеджера с явным указанием пути для кэширования
+        from webdriver_manager.chrome import ChromeDriverManager
+        from selenium.webdriver.chrome.service import Service
+        
+        # Создаем временную директорию для драйвера, если её нет
+        driver_path = os.path.join(os.getcwd(), "webdriver")
+        if not os.path.exists(driver_path):
+            os.makedirs(driver_path)
+            
+        service = Service(ChromeDriverManager(path=driver_path).install())
+        driver = webdriver.Chrome(service=service, options=chrome_options)
+        driver.maximize_window()
+        return driver
+        
+    except Exception as e:
+        print(f"Ошибка при установке драйвера через менеджер: {e}")
+        
+        try:
+            # Способ 2: Использование ChromeDriver напрямую (требуется ручная загрузка)
+            # Загрузите ChromeDriver с https://chromedriver.chromium.org/downloads
+            # и поместите chromedriver.exe в корневую папку проекта
+            chromedriver_path = os.path.join(os.getcwd(), "chromedriver.exe")
+            
+            if os.path.exists(chromedriver_path):
+                print(f"Используем локальный ChromeDriver: {chromedriver_path}")
+                service = Service(executable_path=chromedriver_path)
+                driver = webdriver.Chrome(service=service, options=chrome_options)
+                driver.maximize_window()
+                return driver
+            else:
+                print(f"ChromeDriver не найден по пути: {chromedriver_path}")
+                print("Пожалуйста, скачайте подходящую версию ChromeDriver и поместите в корневую папку проекта")
+                raise FileNotFoundError(f"ChromeDriver не найден: {chromedriver_path}")
+                
+        except Exception as e2:
+            print(f"Все способы установки драйвера не удались: {e2}")
+            raise
 
 
 def parse_table(driver):
