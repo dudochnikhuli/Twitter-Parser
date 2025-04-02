@@ -162,12 +162,108 @@ def select_page_size(driver, size=30):
         print("Продолжение с текущими настройками...")
 
 
+def get_total_pages(driver):
+    """Определяет общее количество страниц путем парсинга элементов пагинации"""
+    try:
+        # Ждем загрузки элементов пагинации
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, ".tw-font-qanelas.tw-flex.tw-min-w-2.tw-justify-center.tw-font-medium.tw-text-body-s"))
+        )
+        
+        # Получаем все элементы с номерами страниц
+        page_elements = driver.find_elements(By.CSS_SELECTOR, ".tw-font-qanelas.tw-flex.tw-min-w-2.tw-justify-center.tw-font-medium.tw-text-body-s")
+        
+        # Извлекаем номера страниц и находим максимальный
+        max_page = 1
+        for elem in page_elements:
+            try:
+                page_num = int(elem.text.strip())
+                max_page = max(max_page, page_num)
+            except (ValueError, TypeError):
+                continue
+        
+        print(f"Обнаружено всего страниц: {max_page}")
+        return max_page
+    except Exception as e:
+        print(f"Ошибка при определении количества страниц: {e}")
+        return 1  # По умолчанию считаем, что есть только 1 страница, если определение не удалось
+
+
+def click_next_button(driver):
+    """Пытается нажать на кнопку 'Далее' используя различные методы"""
+    # Метод 1: Поиск по аналитическому атрибуту
+    try:
+        next_button = WebDriverWait(driver, 5).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "button[analyticsval1='goToNextPageLink']"))
+        )
+        if "disabled" not in next_button.get_attribute("class"):
+            next_button.click()
+            print("Переход на следующую страницу (метод 1)")
+            return True
+    except Exception as e:
+        print(f"Метод 1 не сработал: {e}")
+    
+    # Метод 2: Поиск по SVG иконке
+    try:
+        next_button = WebDriverWait(driver, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "svg.fa-chevron-right"))
+        )
+        # Кликаем по родительскому элементу button
+        parent_button = next_button.find_element(By.XPATH, "./ancestor::button")
+        if "disabled" not in parent_button.get_attribute("class"):
+            parent_button.click()
+            print("Переход на следующую страницу (метод 2)")
+            return True
+    except Exception as e:
+        print(f"Метод 2 не сработал: {e}")
+    
+    # Метод 3: Использование XPath
+    try:
+        # Пробуем оба варианта XPath
+        xpaths = [
+            "/html/body/div[2]/div/div[2]/main/div/section[2]/div/div[2]/div[5]/div[2]/div[2]/button[2]",
+            "/html/body/div[1]/div/div[2]/main/div/section[2]/div/div[2]/div[5]/div[2]/div[2]/button[2]"
+        ]
+        for xpath in xpaths:
+            try:
+                next_button = WebDriverWait(driver, 3).until(
+                    EC.presence_of_element_located((By.XPATH, xpath))
+                )
+                if "disabled" not in next_button.get_attribute("class"):
+                    next_button.click()
+                    print(f"Переход на следующую страницу (метод 3, XPath: {xpath})")
+                    return True
+            except:
+                continue
+    except Exception as e:
+        print(f"Метод 3 не сработал: {e}")
+    
+    # Метод 4: JavaScript
+    try:
+        js_script = """
+        let nextButton = Array.from(document.querySelectorAll('button')).find(
+            button => button.querySelector('svg.fa-chevron-right') && !button.disabled
+        );
+        if (nextButton) {
+            nextButton.click();
+            return true;
+        }
+        return false;
+        """
+        result = driver.execute_script(js_script)
+        if result:
+            print("Переход на следующую страницу (метод 4, JavaScript)")
+            return True
+    except Exception as e:
+        print(f"Метод 4 не сработал: {e}")
+    
+    print("Не удалось найти или нажать кнопку 'Далее'. Возможно, достигнута последняя страница.")
+    return False
+
+
 def main():
     # URL сайта
     url = "https://phantombuster.com/7912167802097990/phantoms/5388867849466815/console"
-    
-    # XPath кнопки "далее"
-    next_button_xpath = "/html/body/div[1]/div/div[2]/main/div/section[2]/div/div[2]/div[5]/div[2]/div[2]/button[2]"
     
     # Создаем папку для результатов, если её нет
     if not os.path.exists("Results"):
@@ -186,11 +282,18 @@ def main():
         # Выбираем 30 строк на странице
         select_page_size(driver, 30)
         
+        # Определяем общее количество страниц
+        total_pages = get_total_pages(driver)
+        
         page_num = 1
         has_next_page = True
+        total_records = 0
         
-        while has_next_page:
-            print(f"Обработка страницы {page_num}")
+        while has_next_page and page_num <= total_pages:
+            print(f"\n=== Обработка страницы {page_num} из {total_pages} ===")
+            
+            # Даем время для полной загрузки таблицы
+            time.sleep(2)
             
             # Парсим текущую таблицу
             df = parse_table(driver)
@@ -199,33 +302,25 @@ def main():
                 # Сохраняем в CSV
                 csv_path = os.path.join("Results", f"{page_num}.csv")
                 df.to_csv(csv_path, index=False, encoding='utf-8')
-                print(f"Сохранена таблица в {csv_path}")
+                total_records += len(df)
+                print(f"Сохранена таблица в {csv_path} ({len(df)} записей)")
             else:
                 print(f"Не удалось получить данные с страницы {page_num}")
             
-            # Проверяем, есть ли кнопка "далее" и активна ли она
-            try:
-                next_button = WebDriverWait(driver, 10).until(
-                    EC.presence_of_element_located((By.XPATH, next_button_xpath))
-                )
-                
-                # Проверяем, не отключена ли кнопка
-                if "disabled" in next_button.get_attribute("class") or not next_button.is_enabled():
-                    print("Достигнута последняя страница")
-                    has_next_page = False
-                else:
-                    # Кликаем по кнопке "далее"
-                    next_button.click()
-                    print("Переход на следующую страницу")
-                    
-                    # Ждем загрузки новой таблицы
-                    time.sleep(2)
-                    page_num += 1
-            except (TimeoutException, NoSuchElementException) as e:
-                print(f"Кнопка 'далее' не найдена или не доступна: {e}")
+            # Проверяем, дошли ли мы до последней страницы
+            if page_num >= total_pages:
+                print("Достигнута последняя страница (по счетчику)")
                 has_next_page = False
+            else:
+                # Пытаемся перейти на следующую страницу
+                if click_next_button(driver):
+                    page_num += 1
+                    # Ждем загрузки новой таблицы
+                    time.sleep(3)
+                else:
+                    has_next_page = False
         
-        print("Парсинг завершен. Объединение CSV файлов...")
+        print("\n=== Парсинг завершен. Объединение CSV файлов... ===")
         
         # Объединяем все CSV файлы
         csv_files = sorted(glob.glob(os.path.join("Results", "*.csv")), 
@@ -243,7 +338,8 @@ def main():
                 
                 # Сохраняем объединенный файл
                 combined_df.to_csv("Results.csv", index=False, encoding='utf-8')
-                print("Все таблицы объединены в Results.csv")
+                print(f"Все таблицы объединены в Results.csv")
+                print(f"Итого собрано: {len(combined_df)} записей из {page_num} страниц")
             else:
                 print("Не найдены данные для объединения")
         else:
@@ -251,11 +347,13 @@ def main():
     
     except Exception as e:
         print(f"Произошла ошибка: {e}")
+        import traceback
+        traceback.print_exc()
     
     finally:
         # Закрываем браузер
         driver.quit()
-        print("Браузер закрыт. Программа завершена.")
+        print("\nБраузер закрыт. Программа завершена.")
 
 
 if __name__ == "__main__":
